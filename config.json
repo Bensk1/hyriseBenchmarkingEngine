@@ -1,0 +1,112 @@
+{
+    "compressedQueries": true,
+    "loadDumpedTables": true,
+    "minBoostPeriod": 5,
+    "maxBoostPeriod": 21,
+    "randomQueriesPerTable": 20,
+    "smallQueriesAttributes": 3,
+    "mediumQueriesAttributes": 5,
+    "largeQueriesAttributes": 9,
+    "randomQueriesAttributes": [3, 5, 9],
+    "boostValues": [0.15, 0.08, 0.06, 0.035, 0.015],
+    "queryShare": [0.2, 0.3, 0.5],
+    "statisticsInCycles": false,
+    "selfTunedIndexSelection": true,
+    "weeklyPeriodicQuery": {
+        "startingFromDay" : 19,
+        "startDay": 5,
+        "duration" : 3,
+        "tableIndex": 2,
+        "queryPercentage": 0.25
+    },
+    "smallQueriesCompoundExpression": [
+        {
+            "name": "0and1",
+            "type": "and",
+            "l": 0,
+            "r": 1
+        },
+        {
+            "name": "0and1and2",
+            "type": "and",
+            "l": "0and1",
+            "r": 2
+        }
+    ],
+    "mediumQueriesCompoundExpression": [
+        {
+            "name": "0and1",
+            "type": "and",
+            "l": 0,
+            "r": 1
+        },
+        {
+            "name": "2and3",
+            "type": "and",
+            "l": 2,
+            "r": 3
+        },
+        {
+            "name": "0and1and4",
+            "type": "and",
+            "l": "0and1",
+            "r": 4
+        },
+        {
+            "name": "0and1and4and2and3",
+            "type": "and",
+            "l": "0and1and4",
+            "r": "2and3"
+        }
+    ],
+    "largeQueriesCompoundExpression": [
+        {
+            "name": "0and1",
+            "type": "and",
+            "l": 0,
+            "r": 1
+        },
+        {
+            "name": "2and3",
+            "type": "and",
+            "l": 2,
+            "r": 3
+        },
+        {
+            "name": "4and5",
+            "type": "and",
+            "l": 4,
+            "r": 5
+        },
+        {
+            "name": "6and7",
+            "type": "and",
+            "l": 6,
+            "r": 7
+        },
+        {
+            "name": "0and1and8",
+            "type": "and",
+            "l": "0and1",
+            "r": 8
+        },
+        {
+            "name": "2and3and4and5",
+            "type": "and",
+            "l": "2and3",
+            "r": "4and5"
+        },
+        {
+            "name": "0and1and8and6and7",
+            "type": "and",
+            "l": "0and1and8",
+            "r": "6and7"
+        },
+        {
+            "name": "0and1and8and6and7and2and3and4and5",
+            "type": "and",
+            "l": "0and1and8and6and7",
+            "r": "2and3and4and5"
+        }
+    ]
+}
