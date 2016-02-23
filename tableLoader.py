@@ -1,6 +1,5 @@
 import glob
 import requests
-import util
 from multiprocessing import Pool
 
 class TableLoader:
