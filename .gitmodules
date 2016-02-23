@@ -1,0 +1,3 @@
+[submodule "hyriseTableGenerator"]
+	path = hyriseTableGenerator
+	url = https://github.com/Bensk1/hyriseTableGenerator
