@@ -1,29 +1,20 @@
-import copy_reg
 import glob
 import requests
-import types
+import util
 from multiprocessing import Pool
-
-def _pickle_method(m):
-    if m.im_self is None:
-        return getattr, (m.im_class, m.im_func.func_name)
-    else:
-        return getattr, (m.im_self, m.im_func.func_name)
-
-copy_reg.pickle(types.MethodType, _pickle_method)
 
 class TableLoader:
     
-    def __init__(self, directory):
+    def __init__(self, directory, dumped):
         self.directory = directory
+        self.dumped = dumped
 
     def buildAndSendRequest(self, tableName):
-        loadTableRequest = self.buildLoadTableRequest(tableName)
+        if self.dumped:
+            loadTableRequest = self.buildLoadTableRequestDumped(tableName)
+        else:
+            loadTableRequest = self.buildLoadTableRequest(tableName)
         requests.post("http://localhost:5000/jsonQuery", data = loadTableRequest)
-
-    def buildAndSendRequestDumped(self, tableName):
-        loadDumpedTableRequest = self.buildLoadTableRequestDumped(tableName)
-        requests.post("http://localhost:5000/jsonQuery", data = loadDumpedTableRequest)
 
     def buildLoadTableRequest(self, tableName):
             loadTableRequest = {'query': '{\
@@ -81,8 +72,8 @@ class TableLoader:
 
         return tableNames
 
-    def getTableNames(self, dumped):
-        if dumped:
+    def getTableNames(self):
+        if self.dumped:
             tableNames = self.getTableNamesDumped()
         else:
             tableNames = self.getTableNamesTbl()
@@ -90,17 +81,14 @@ class TableLoader:
         tableNames.sort()
         return tableNames
 
-    def loadTables(self, dumped):
+    def loadTables(self):
         print "Load all tables in directory: %s" % (self.directory)
 
-        tableNames = self.getTableNames(dumped)
+        tableNames = self.getTableNames()
 
         threadPool = Pool(len(tableNames))
 
-        if dumped:
-            threadPool.map(self.buildAndSendRequestDumped, tableNames)
-        else:
-            threadPool.map(self.buildAndSendRequest, tableNames)
+        threadPool.map(self.buildAndSendRequest, tableNames)
 
         threadPool.close()
         threadPool.join()
