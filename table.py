@@ -1,5 +1,6 @@
 import config
 import linecache
+import sys
 
 from column import Column
 from jinja2 import Template
@@ -87,6 +88,10 @@ class Table:
 
     def generateQuery(self, numberOfAttributes, compoundExpressions):
         columnObjects = []
+
+        if numberOfAttributes > len(self.datatypes):
+            print "Number of attributes (=%i) for query class is higher as available attributes(=%i) in table. Please provide larger tables! Aborting..." % (numberOfAttributes, len(self.datatypes))
+            sys.exit()
 
         for attribute in range(numberOfAttributes):
             columnObjects.append(Column(attribute, "EQ", self.values[attribute], self.datatypes[attribute]))

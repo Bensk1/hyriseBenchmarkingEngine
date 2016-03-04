@@ -2,6 +2,7 @@ import config
 import numpy as np
 import requests
 import time
+import util
 
 from multiprocessing import Pool
 from query import QueryType
@@ -19,6 +20,7 @@ STATISTICAL_FUNCTIONS = {
 def tickSeconds(query):
     nextTick = time.time() + TICK_MS
     r = requests.post("http://localhost:5000/jsonQuery", data=query.text)
+    print r.text
 
     performanceData = r.json()["performanceData"]
     

@@ -21,8 +21,8 @@ class Runner:
         self.currentDay = 1
         self.tableDirectory = tableDirectory
 
-        self.tableLoader = TableLoader(tableDirectory)
-        self.tableLoader.loadTables(config.config["loadDumpedTables"])
+        self.tableLoader = TableLoader(tableDirectory, config.config["loadDumpedTables"])
+        self.tableLoader.loadTables()
 
         self.querySender = QuerySender()
         self.indexEngine = IndexEngine()
@@ -31,7 +31,7 @@ class Runner:
         for tableName in self.tableLoader.getTableNames():
             self.tables.append(Table(self.tableDirectory, tableName))
 
-        self.determineBoostPeriod()
+        self.determineBoostInterval()
         self.periodActive = False
         self.queryDistributionStatistic = [[0] * DAYS for i in range(len(QueryType))]
 
@@ -62,21 +62,21 @@ class Runner:
             queries.append(self.tables[randomTable].randomQueries[randomQuery])
 
     def boostTableShares(self, tableShares, queriesToday):
-        if self.currentDay % self.boostPeriod == 1:
+        if self.currentDay % self.boostInterval == 1:
             self.determineBoostTables()
-            self.determineBoostPeriod()
+            self.determineBoostInterval()
 
         for boostIndex, value in zip(self.boostTables, config.config["boostValues"]):
             tableShares[boostIndex] = int(tableShares[boostIndex] + value * queriesToday)
 
-    def determineBoostPeriod(self):
-        self.boostPeriod = self.currentDay + randint(config.config["minBoostPeriod"], config.config["maxBoostPeriod"])
+    def determineBoostInterval(self):
+        self.boostInterval = self.currentDay + randint(config.config["minBoostInterval"], config.config["maxBoostInterval"])
 
     def determineBoostTables(self):
         self.boostTables = []
         tables = sorted(range(len(self.tables)), key =lambda *args: random())
 
-        for i in range(len(config.config["boostValues"])):
+        for i in range(len(self.tables)):
             self.boostTables.append(tables[i])
 
     def noiseNumberOfQueries(self, numberOfQueries):
