@@ -150,7 +150,11 @@ class Runner:
 # For testing purposes, uncomment for random tables
 seed(1238585430324)
 
-runner = Runner(sys.argv[1])
+if len(sys.argv) <> 2:
+    print "Usage: python benchmark.py tableDirectory"
+    sys.exit()
+else:
+    runner = Runner(sys.argv[1])
 
 for i in range(DAYS):
     runner.prepareDay()

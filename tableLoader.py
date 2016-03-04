@@ -1,6 +1,16 @@
+import copy_reg
 import glob
 import requests
+import types
 from multiprocessing import Pool
+
+def _pickle_method(m):
+    if m.im_self is None:
+        return getattr, (m.im_class, m.im_func.func_name)
+    else:
+        return getattr, (m.im_self, m.im_func.func_name)
+
+copy_reg.pickle(types.MethodType, _pickle_method)
 
 class TableLoader:
     
@@ -51,7 +61,17 @@ class TableLoader:
 
             return loadTableRequest
 
-    def getTableNames(self):
+    def getTableNamesDumped(self):
+        tableNames = []
+        filenames = glob.glob("%s/*_dumped" % (self.directory))
+
+        for filename in filenames:
+            filename = filename.split("_dumped")[0]
+            tableNames.append(filename.split('/')[-1])
+
+        return tableNames
+
+    def getTableNamesTbl(self):
         tableNames = []
         filenames = glob.glob("%s/*.tbl" % (self.directory))
 
@@ -59,13 +79,21 @@ class TableLoader:
             filename = filename.split(".tbl")[0]
             tableNames.append(filename.split('/')[-1])
 
+        return tableNames
+
+    def getTableNames(self, dumped):
+        if dumped:
+            tableNames = self.getTableNamesDumped()
+        else:
+            tableNames = self.getTableNamesTbl()
+
         tableNames.sort()
         return tableNames
 
     def loadTables(self, dumped):
         print "Load all tables in directory: %s" % (self.directory)
 
-        tableNames = self.getTableNames()
+        tableNames = self.getTableNames(dumped)
 
         threadPool = Pool(len(tableNames))
 

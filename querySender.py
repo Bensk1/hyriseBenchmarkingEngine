@@ -2,7 +2,6 @@ import config
 import numpy as np
 import requests
 import time
-import util
 
 from multiprocessing import Pool
 from query import QueryType
